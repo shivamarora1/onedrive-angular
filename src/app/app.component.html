@@ -1,7 +1,22 @@
 <main class="main">
-  <button *ngIf="!userName" (click)="onLogin()">Login</button>
-  <button *ngIf="userName">{{userName}}</button>
-  
+  <div>
+  Microsoft one drive file picker
+  </div>
+  <div class = "steps">
+    <div class="step">
+      Step 1: <button pButton [text]="true" icon="pi pi-lock" severity="success" label="Login" size="small" (onClick)="onLogin()" [disabled]=" false"></button> to your account
+    </div>
+    <div class="step">
+      Step 2: 
+      <div>
+        <button pButton icon="pi pi-folder-open" label="Open One Drive" [outlined]="true" size="small" (onClick)="onLogin()" [disabled]=" false"></button>
+        <button pButton icon="pi pi-users" label="Open Sharepoint" severity="info" [outlined]="true" size="small" (onClick)="onLogin()" [disabled]=" false"></button> 
+      </div>
+    </div>
+  </div>
+
+  <!-- <button *ngIf="!userName" (click)="onLogin()">Login</button> -->
+  <div *ngIf="userName">Welcome {{userName}}</div>
   <div *ngIf="errorMsg!=''">{{errorMsg}}</div>
 </main>
 

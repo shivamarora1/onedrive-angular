@@ -1,21 +1,48 @@
-main{
-    margin-right: auto;
-    width: fit-content;
-    font-size: 1.25vw;
-    margin-top: 2vw;
-    margin-left: auto;
+.drop-down {
+  text-align: right;
+}
+.card {
+  font-size: 1vw;
+  font-weight: 600;
+  .heading {
+    padding-bottom: 5px;
     text-align: center;
-    .steps{
-        font-size: 1vw;
-        margin-top: 0.5vw;
-        padding: 0 2vw;
-        .step{
-            display: flex;
-            align-items: center;
-            height: fit-content; 
-            button{
-                margin: 0 0.5vw;
-            }
+  }
+}
+#iframe-container {
+  text-align: center;
+  padding: 2vw;
+}
+.card {
+  margin-left: auto;
+  width: fit-content;
+  margin-right: auto;
+}
+main {
+  margin-right: auto;
+  width: fit-content;
+  font-size: 1.25vw;
+  margin-left: auto;
+  text-align: center;
+  .steps {
+    font-size: 1vw;
+    margin-top: 0.5vw;
+    padding: 0 2vw;
+    .step {
+      display: flex;
+      align-items: center;
+      height: fit-content;
+      .onedrive-buttons {
+        width: 11.5vw;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        height: 5.5vw;
+        flex-direction: column;
+        button {
+          margin: 0 0.5vw;
         }
+      }
     }
+  }
 }

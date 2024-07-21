@@ -37,3 +37,4 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
  How to set up the application?
  
+ 3. Remove strict in tsconfig.json

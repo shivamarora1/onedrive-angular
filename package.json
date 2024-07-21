@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --output-path docs --base-href /onedrive-angular/",
+    "build": "ng build --output-path docs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "postbuild": "node post-build.js"
@@ -19,6 +19,9 @@
     "@angular/platform-browser": "^18.1.0",
     "@angular/platform-browser-dynamic": "^18.1.0",
     "@angular/router": "^18.1.0",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
+    "@microsoft/microsoft-graph-types": "^2.40.0",
+    "@pnp/core": "^4.3.0",
     "@pnp/picker-api": "file:lib/sdk-pnptimeline",
     "primeicons": "^7.0.0",
     "primeng": "^17.18.5",

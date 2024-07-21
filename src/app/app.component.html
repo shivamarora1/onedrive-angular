@@ -1,24 +1,59 @@
+<div class="drop-down">
+  <p-button icon="pi pi-user" [outlined]="true" (onClick)="op.toggle($event)" />
+  <p-overlayPanel #op>
+    <div *ngIf="!userName" (click)="onLogin()">
+      <button pButton [text]="true" label="Login"></button>
+    </div>
+    <div *ngIf="userName" [ngStyle]="{ padding: '0 0 0 1vw' }">
+      <b>{{ userName }}</b>
+    </div>
+    <div *ngIf="userName" (click)="onLogout()">
+      <button pButton severity="danger" [text]="true" label="Logout"></button>
+    </div>
+  </p-overlayPanel>
+</div>
 <main class="main">
-  <div>
-  Microsoft one drive file picker
-  </div>
-  <div class = "steps">
+  <div>Microsoft one drive file picker</div>
+  <div class="steps">
     <div class="step">
-      Step 1: <button pButton [text]="true" icon="pi pi-lock" severity="success" label="Login" size="small" (onClick)="onLogin()" [disabled]=" false"></button> to your account
+      Step 1:
+      <button pButton [text]="true" icon="pi pi-lock" severity="success" label="Login" size="small" (click)="onLogin()"
+        [disabled]="userName"></button>
+      to your account
     </div>
     <div class="step">
-      Step 2: 
-      <div>
-        <button pButton icon="pi pi-folder-open" label="Open One Drive" [outlined]="true" size="small" (onClick)="onLogin()" [disabled]=" false"></button>
-        <button pButton icon="pi pi-users" label="Open Sharepoint" severity="info" [outlined]="true" size="small" (onClick)="onLogin()" [disabled]=" false"></button> 
+      Step 2:
+      <div class="onedrive-buttons">
+        <button pButton icon="pi pi-folder-open" label="Open One Drive" [outlined]="true" size="small"
+          (click)="openFilePickerDialogBox()" [disabled]="!userName"></button>
+        <button pButton icon="pi pi-users" label="Open Sharepoint" severity="info" [outlined]="true" size="small"
+          (click)="openSharepointOneDrive()" [disabled]="!userName"></button>
       </div>
     </div>
   </div>
-
-  <!-- <button *ngIf="!userName" (click)="onLogin()">Login</button> -->
-  <div *ngIf="userName">Welcome {{userName}}</div>
-  <div *ngIf="errorMsg!=''">{{errorMsg}}</div>
 </main>
+<div id="iframe-container"></div>
 
 
+<div class="card" *ngIf="pickedItems">
+  <div class="heading">Picked items</div>
+  <p-table [value]="pickedItems"
+    [tableStyle]="{'width': '50vw','padding': '0.15vw','border': 'solid 1px black','border-radius': '10px' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 80%">Name</th>
+        <th style="width: 15%">Size</th>
+        <th style="width: 5%"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-pickedItem>
+      <tr>
+        <td>{{ pickedItem.name }}</td>
+        <td>{{formatBytes(pickedItem.size) }}</td>
+        <td><a href="{{pickedItem.webUrl}}" target="_blank"><i class="pi pi-external-link"></i></a></td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+<p-toast />
 <router-outlet />

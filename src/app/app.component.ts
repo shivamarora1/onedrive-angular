@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { BrowserAuthError } from '@azure/msal-browser';
-import { getTokenWithScopes, getActiveAccount, getToken } from './auth';
+import { getTokenWithScopes, getActiveAccount, getToken, msalParams } from './auth';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
@@ -11,6 +11,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { TableModule } from 'primeng/table';
 import { formatBytes } from './utils/utils';
+import { Configuration } from "@azure/msal-browser";
 import {
   Client,
   AuthProvider,
@@ -20,13 +21,12 @@ import {
 } from '@microsoft/microsoft-graph-client';
 import {
   Picker,
-  Embed,
   IPickData,
   ResolveWithPicks,
   IFilePickerOptions,
   Popup,
   IPicker,
-  LamdaAuthenticate,
+  MSALAuthenticate,
   SPItem,
 } from '@pnp/picker-api';
 
@@ -37,7 +37,8 @@ const requiredPermissions = [
   'offline_access',
 ];
 
-const filePickerOptions: IFilePickerOptions = {
+
+const sharepointFilePickerOptions: IFilePickerOptions = {
   sdk: '8.0',
   entry: {
     sharePoint: {},
@@ -62,28 +63,28 @@ const filePickerOptions: IFilePickerOptions = {
   },
 };
 
-// const filePickerOptions: IFilePickerOptions = {
-//   sdk: '8.0',
-//   entry: {
-//     oneDrive: {},
-//   },
-//   authentication: {},
-//   messaging: {
-//     origin: window.location.origin,
-//     channelId: '27',
-//   },
-//   selection: {
-//     mode: 'multiple',
-//     maxCount: 5,
-//   },
-//   typesAndSources: {
-//     mode: 'all',
-//     pivots: {
-//       recent: true,
-//       oneDrive: true,
-//     },
-//   },
-// };
+const oneDriveFilePickerOptions: IFilePickerOptions = {
+  sdk: '8.0',
+  entry: {
+    oneDrive: { files: {}, },
+  },
+  authentication: {},
+  messaging: {
+    origin: window.location.origin,
+    channelId: '27',
+  },
+  selection: {
+    mode: 'multiple',
+    maxCount: 5,
+  },
+  typesAndSources: {
+    mode: 'all',
+    pivots: {
+      recent: true,
+      oneDrive: true,
+    },
+  },
+};
 
 @Component({
   selector: 'app-root',
@@ -164,6 +165,7 @@ export class AppComponent {
     // * getting share point site URL before opening sharepoint file picker.
     try {
       this.pickedItems = null;
+
       const authProvider: AuthProvider = async (
         callback: AuthProviderCallback
       ) => {
@@ -180,7 +182,6 @@ export class AppComponent {
       const client = Client.init(options);
       const result: MicrosoftGraph.Site = await client.api('/sites/root').get();
       const sharepointUrl = result.webUrl || '';
-
       if (sharepointUrl) {
         this.msgService.add({
           severity: 'success',
@@ -202,8 +203,25 @@ export class AppComponent {
     }
   }
 
-  async openFilePickerDialogBox(sharepointUrl: string = ''): Promise<void> {
+  async openOneDrive() {
+    try {
+      await this.openFilePickerDialogBox();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async openFilePickerDialogBox(baseUrl?: string): Promise<void> {
     this.onClose();
+
+    const options: IFilePickerOptions = baseUrl ? sharepointFilePickerOptions : oneDriveFilePickerOptions
+    const pickerPathOverride: string = baseUrl ? undefined : ''
+
+    // * changing authority in case of onedrive login.
+    const msalConsumerParams: Configuration = msalParams
+    msalConsumerParams.auth.authority = "https://login.microsoftonline.com/consumers"
+
+    const authenticator: any = baseUrl ? MSALAuthenticate(msalParams) : MSALAuthenticate(msalConsumerParams, ["OneDrive.ReadWrite"])
 
     var iframe = document.createElement('iframe');
     iframe.src = '';
@@ -221,7 +239,7 @@ export class AppComponent {
       let picker = Picker(contentWindow).using(
         ResolveWithPicks(),
         Popup(),
-        LamdaAuthenticate(getToken)
+        authenticator,
       );
 
       picker.on.notification(function (this: IPicker, message) {
@@ -243,18 +261,15 @@ export class AppComponent {
         this.log(`error: ${err}`);
       });
 
-      (async () => {
-        const baseUrl = sharepointUrl || 'https://onedrive.live.com';
-        const results: IPickData | void = await picker.activate({
-          baseUrl,
-          options: filePickerOptions,
-        });
-        if (results) {
-          this.pickedItems = results.items;
-          console.log(this.pickedItems);
-          parentComp.onClose();
-        }
-      })();
+      baseUrl = baseUrl || 'https://onedrive.live.com/picker',
+        (async () => {
+          let params = pickerPathOverride != undefined ? { baseUrl, options, pickerPathOverride } : { baseUrl, options }
+          const results: IPickData | void = await picker.activate(params);
+          if (results) {
+            this.pickedItems = results.items;
+            parentComp.onClose();
+          }
+        })();
     }
   }
 }

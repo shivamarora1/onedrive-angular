@@ -2,7 +2,7 @@ import { PublicClientApplication, Configuration, SilentRequest, BrowserCacheLoca
 import { combine } from "@pnp/core";
 import { IAuthenticateCommand } from "@pnp/picker-api/dist";
 
-const msalParams: Configuration = {
+export const msalParams: Configuration = {
     auth: {
         authority: "https://login.microsoftonline.com/common",
         clientId: "3242284e-c36d-4ac7-8bde-d02811524161",
@@ -38,9 +38,10 @@ export async function getTokenWithScopes(scopes: string[], additionalAuthParams?
             throw e;
         }
     }
-
     return accessToken;
 }
+
 export function getActiveAccount(): AccountInfo | null {
     return app.getActiveAccount()
+
 }

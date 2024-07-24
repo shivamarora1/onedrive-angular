@@ -1,28 +1,8 @@
-<div class="drop-down">
-  <p-button icon="pi pi-user" [outlined]="true" (onClick)="op.toggle($event)" />
-  <p-overlayPanel #op>
-    <div *ngIf="!userName" (click)="onLogin()">
-      <button pButton [text]="true" label="Login"></button>
-    </div>
-    <div *ngIf="userName" [ngStyle]="{ padding: '0 0 0 1vw' }">
-      <b>{{ userName }}</b>
-    </div>
-    <div *ngIf="userName" (click)="onLogout()">
-      <button pButton severity="danger" [text]="true" label="Logout"></button>
-    </div>
-  </p-overlayPanel>
-</div>
 <main class="main">
   <div>Microsoft one drive file picker</div>
   <div class="steps">
     <div class="step">
-      Step 1:
-      <button pButton [text]="true" icon="pi pi-lock" severity="success" label="Login" size="small" (click)="onLogin()"
-        [disabled]="userName"></button>
-      to your account
-    </div>
-    <div class="step">
-      Step 2:
+      Click One:
       <div class="onedrive-buttons">
         <button pButton icon="pi pi-folder-open" label="Open One Drive" [outlined]="true" size="small"
           (click)="openOneDrive()" ></button>

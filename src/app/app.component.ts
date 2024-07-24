@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { BrowserAuthError } from '@azure/msal-browser';
-import { getTokenWithScopes, getActiveAccount, getToken, msalParams } from './auth';
+import { getTokenWithScopes, msalParams } from './auth';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
@@ -96,7 +94,6 @@ const oneDriveFilePickerOptions: IFilePickerOptions = {
     RouterOutlet,
     CommonModule,
     ButtonModule,
-    OverlayPanelModule,
     TableModule,
   ],
   templateUrl: './app.component.html',
@@ -104,7 +101,6 @@ const oneDriveFilePickerOptions: IFilePickerOptions = {
 })
 export class AppComponent {
   title = 'onedrive-angular';
-  userName: string = '';
   pickedItems!: SPItem[];
 
   constructor(
@@ -114,40 +110,6 @@ export class AppComponent {
 
   ngOnInit() {
     this.primengConfig.ripple = true;
-  }
-
-  async onLogin() {
-    try {
-      await getTokenWithScopes(requiredPermissions);
-      const activeAcc = getActiveAccount();
-      if (activeAcc) {
-        this.userName = activeAcc?.username;
-        this.msgService.add({
-          severity: 'success',
-          detail: 'Successfully logged in as ' + this.userName,
-        });
-      } else {
-        this.msgService.add({
-          severity: 'danger',
-          detail: 'Unable to get active account info pls login again.',
-        });
-      }
-    } catch (e) {
-      let errorMsg = 'something went wrong pls re login...';
-      if (e instanceof BrowserAuthError) {
-        errorMsg = e.errorMessage;
-      }
-      errorMsg = errorMsg;
-      this.msgService.add({
-        severity: 'danger',
-        detail: errorMsg,
-      });
-      console.error(e);
-    }
-  }
-
-  async onLogout() {
-    console.log('Logout Clicked...');
   }
 
   onClose(): void {
@@ -218,9 +180,7 @@ export class AppComponent {
     const pickerPathOverride: string = baseUrl ? undefined : ''
 
     // * changing authority in case of onedrive login.
-    const msalConsumerParams: Configuration = msalParams
-    msalConsumerParams.auth.authority = "https://login.microsoftonline.com/consumers"
-
+    const msalConsumerParams: Configuration = { ...msalParams, auth: { ...msalParams.auth, authority: "https://login.microsoftonline.com/consumers" } }
     const authenticator: any = baseUrl ? MSALAuthenticate(msalParams) : MSALAuthenticate(msalConsumerParams, ["OneDrive.ReadWrite"])
 
     var iframe = document.createElement('iframe');

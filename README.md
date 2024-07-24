@@ -1,41 +1,32 @@
-# OnedriveAngular
+ ## How to run this project:
+ 1. Transpile the source package `sdk-pnptimeline`
+ ```
+ cd sdk-pnptimeline
+ npm install
+ npm build
+ ```
+2. Create a new [AAD App Registration](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app?tabs=certificate), note the ID of the application.
+3. Replace the clientId in `auth.ts` file.
+ ```
+ export const msalParams: Configuration = {
+    auth: {
+        authority: "https://login.microsoftonline.com/common",
+        clientId: "<Your Client Id>",
+        redirectUri: window.location.origin
+    },
+    cache: { cacheLocation: BrowserCacheLocation.LocalStorage }
+}
+```
+4. Install the required dependencies
+```
+npm install --save
+```
+5. Run the application
+```
+npm run start
+```
+6. Building this project. Change script.start field in package.json as required.
+```
+npm run build
+``` 
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.0.
-
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-
-
-1. cd lib/sdk-pnptimeline
-    npm install --force
-    npm run build to transpile the source package
-    cd ../../
-    npm install --save, to refer above package.
-
- 2. replace clientid in auth.ts file.   
-
- How to set up the application?
- 
- 3. Remove strict in tsconfig.json
- 4. We need to change authority for onedrive login

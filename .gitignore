@@ -5,7 +5,9 @@
 /tmp
 /out-tsc
 /bazel-out
-
+lib/sdk-pnptimeline/.vscode
+lib/sdk-pnptimeline/dist
+lib/sdk-pnptimeline/node_modules
 # Node
 /node_modules
 npm-debug.log
